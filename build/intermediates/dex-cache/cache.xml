@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        jar="C:\Users\MstfDryl\AppData\Local\Android\sdk\extras\android\m2repository\com\android\support\support-annotations\23.0.1\support-annotations-23.0.1.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="1fce89a6428c51467090d7f424e4c9c3dbd55f7e">
+        <dex dex="F:\AndoridStudioProject\Inventory\app\build\intermediates\pre-dexed\debug\support-annotations-23.0.1-d1970889b60556c4ff5abed740bec91df5a80603.jar" />
+    </item>
+    <item
+        jar="F:\AndoridStudioProject\Inventory\app\build\intermediates\exploded-aar\com.android.support\design\23.0.1\jars\classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="e5c61a3169221a89654ffcaaed47bba51cf071ad">
+        <dex dex="F:\AndoridStudioProject\Inventory\app\build\intermediates\pre-dexed\debug\classes-75bfedbc057849e6eba3e85b446a92cad688b16c.jar" />
+    </item>
+    <item
+        jar="C:\Users\MstfDryl\.gradle\caches\modules-2\files-2.1\com.squareup.okio\okio\1.6.0\98476622f10715998eacf9240d6b479f12c66143\okio-1.6.0.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="98476622f10715998eacf9240d6b479f12c66143">
+        <dex dex="F:\AndoridStudioProject\Inventory\app\build\intermediates\pre-dexed\debug\okio-1.6.0-552de0950b0001c4d52788ebdc11efb678be542c.jar" />
+    </item>
+    <item
+        jar="C:\Users\MstfDryl\.gradle\caches\modules-2\files-2.1\com.squareup.retrofit\retrofit\2.0.0-beta2\880d9e0997b2d1bfc98e0d121ced33ee5d04aac4\retrofit-2.0.0-beta2.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="880d9e0997b2d1bfc98e0d121ced33ee5d04aac4">
+        <dex dex="F:\AndoridStudioProject\Inventory\app\build\intermediates\pre-dexed\debug\retrofit-2.0.0-beta2-7a720ae7b8b64068197fa2c923564ca6488920bc.jar" />
+    </item>
+    <item
+        jar="C:\Users\MstfDryl\.gradle\caches\modules-2\files-2.1\com.squareup.okhttp\okhttp\2.5.0\4de2b4ed3445c37ec1720a7d214712e845a24636\okhttp-2.5.0.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="4de2b4ed3445c37ec1720a7d214712e845a24636">
+        <dex dex="F:\AndoridStudioProject\Inventory\app\build\intermediates\pre-dexed\debug\okhttp-2.5.0-3691648d58fe1df2cd8213bb1a3e2e5002574d61.jar" />
+    </item>
+    <item
+        jar="F:\AndoridStudioProject\Inventory\app\build\intermediates\exploded-aar\com.android.support\support-v4\23.0.1\jars\libs\internal_impl-23.0.1.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="aa92916125166649d8ad4ba3940c3dd7515596d3">
+        <dex dex="F:\AndoridStudioProject\Inventory\app\build\intermediates\pre-dexed\debug\internal_impl-23.0.1-46c91a0a7d17972823a87866d486084fd9234cea.jar" />
+    </item>
+    <item
+        jar="F:\AndoridStudioProject\Inventory\app\build\intermediates\exploded-aar\com.android.support\appcompat-v7\23.0.1\jars\classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="d86429b0f0b3f3cafbeb78dda1b9d89119ccb05d">
+        <dex dex="F:\AndoridStudioProject\Inventory\app\build\intermediates\pre-dexed\debug\classes-980f04cf5fdf37fc91d46265b539070063910a15.jar" />
+    </item>
+    <item
+        jar="F:\AndoridStudioProject\Inventory\app\build\intermediates\exploded-aar\com.android.support\support-v4\23.0.1\jars\classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="c31e21b53ff2f74664e498248d01453a32e32d48">
+        <dex dex="F:\AndoridStudioProject\Inventory\app\build\intermediates\pre-dexed\debug\classes-feaf9819d6d4dda3a31cde40c03ef1b27c8f65b6.jar" />
+    </item>
+
+</items>

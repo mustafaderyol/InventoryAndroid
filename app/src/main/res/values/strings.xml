@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">Envanter Takip</string>
+    
+    <!-- Strings related to login -->
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Parola</string>
+    <string name="action_sign_in">Giriş Yap</string>
+    <string name="action_sign_in_short">Giriş</string>
+    <string name="error_invalid_email">Email Adresi Bulunamadı</string>
+    <string name="error_invalid_password">Parola en az 8 karakter olabilir</string>
+    <string name="error_incorrect_password">Parola Hatalı</string>
+    <string name="error_field_required">Bu alan boş bırakılamaz</string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing email
+        completions."
+    </string>
+</resources>
