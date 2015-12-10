@@ -18,6 +18,13 @@ android {
         }
     }
 }
+repositories {
+    mavenCentral()
+
+    maven {
+        url "https://raw.github.com/embarkmobile/zxing-android-minimal/mvn-repo/maven-repository/"
+    }
+}
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
@@ -26,4 +33,7 @@ dependencies {
     compile 'com.android.support:design:23.0.1'
     compile 'com.squareup.retrofit:retrofit:2.0.0-beta2'
     compile 'com.squareup.okhttp:okhttp:2.5.0'
+    compile 'com.google.zxing:core:2.2'
+    compile 'com.embarkmobile:zxing-android-minimal:1.2.1@aar'
+    compile files('./libs/zxing/core.jar')
 }
