@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.mustafaderyol.inventory.detail.InventoryDetail;
 import com.mustafaderyol.inventory.entity.Inventory;
 import com.mustafaderyol.inventory.entity.InventoryRelationship;
+import com.mustafaderyol.inventory.entity.Services;
 import com.mustafaderyol.inventory.util.Global;
 
 import java.io.IOException;
@@ -79,14 +80,14 @@ public class Dashboard extends AppCompatActivity {
                     Snackbar.make(dashboard_layout,"Sonuç: "+result,Snackbar.LENGTH_LONG).show();
 
 
-                    Call<Inventory> call = Global.service.getInventory(id);
+                    Call<Inventory> call = Global.service.getInventory(id,Global.BASIC_AUTH);
                     call.enqueue(new Callback<Inventory>() {
                         @Override
                         public void onResponse(Response<Inventory> response, Retrofit retrofit) {
 
                             Global.INVENTORY = response.body();
 
-                            Call<List<InventoryRelationship>> call = Global.service.getInventoryRelationship(Global.INVENTORY.getId());
+                            Call<List<InventoryRelationship>> call = Global.service.getInventoryRelationship(Global.INVENTORY.getId(),Global.BASIC_AUTH);
                             call.enqueue(new Callback<List<InventoryRelationship>>() {
                                 @Override
                                 public void onResponse(Response<List<InventoryRelationship>> response2, Retrofit retrofit) {
@@ -94,8 +95,22 @@ public class Dashboard extends AppCompatActivity {
 
                                     Global.INVENTORTYRELATIONSHIPLIST = response2.body();
 
-                                    Intent i = new Intent(getApplication(), InventoryDetail.class);
-                                    startActivity(i);
+                                    Call<List<Services>> call = Global.service.getInventoryServices(Global.INVENTORY.getId(),Global.BASIC_AUTH);
+                                    call.enqueue(new Callback<List<Services>>() {
+                                        @Override
+                                        public void onResponse(Response<List<Services>> response2, Retrofit retrofit) {
+
+
+                                            Global.INVENTORTYSERVICESLIST = response2.body();
+
+                                            Intent i = new Intent(getApplication(), InventoryDetail.class);
+                                            startActivity(i);
+                                        }
+
+                                        @Override
+                                        public void onFailure(Throwable t) {
+                                        }
+                                    });
                                 }
 
                                 @Override

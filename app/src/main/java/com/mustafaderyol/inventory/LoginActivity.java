@@ -212,15 +212,9 @@ public class LoginActivity extends AppCompatActivity{
                         {
                             Global.PERSONAL = response.body();
                             String text = Global.EMAIL+":"+Global.PASSWORD;
-                            byte[] data = null;
-                            try {
-                                data = text.getBytes("UTF-8");
-                            } catch (UnsupportedEncodingException e1) {
-                                e1.printStackTrace();
-                            }
-                            String base64 = Base64.encodeToString(data, Base64.DEFAULT);
+                            String base64 =  Base64.encodeToString(text.getBytes(), Base64.NO_WRAP);
 
-                            Global.BASIC_AUTH = base64;
+                            Global.BASIC_AUTH = "Basic "+base64;
 
                             successBool = true;
 

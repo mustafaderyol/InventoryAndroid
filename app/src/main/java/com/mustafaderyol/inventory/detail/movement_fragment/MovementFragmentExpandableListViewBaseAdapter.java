@@ -10,6 +10,7 @@ import android.widget.ExpandableListView;
 import android.widget.TextView;
 
 import com.mustafaderyol.inventory.R;
+import com.mustafaderyol.inventory.entity.MovementHistory;
 
 import java.util.HashMap;
 import java.util.List;
@@ -20,9 +21,9 @@ import java.util.List;
 public class MovementFragmentExpandableListViewBaseAdapter extends BaseExpandableListAdapter {
     private Context _context;
     private List<String> _listDataHeader;
-    private HashMap<String, List<String>> _listDataChild;
+    private HashMap<String, MovementHistory> _listDataChild;
 
-    public MovementFragmentExpandableListViewBaseAdapter(Context context, List<String> listDataHeader, HashMap<String, List<String>> listChildData) {
+    public MovementFragmentExpandableListViewBaseAdapter(Context context, List<String> listDataHeader, HashMap<String, MovementHistory> listChildData) {
         this._context = context;
         this._listDataHeader = listDataHeader;
         this._listDataChild = listChildData;
@@ -30,7 +31,7 @@ public class MovementFragmentExpandableListViewBaseAdapter extends BaseExpandabl
 
     @Override
     public Object getChild(int groupPosition, int childPosititon) {
-        return this._listDataChild.get(this._listDataHeader.get(groupPosition)).get(childPosititon);
+        return this._listDataChild.get(this._listDataHeader.get(groupPosition));
     }
 
     @Override
@@ -40,22 +41,28 @@ public class MovementFragmentExpandableListViewBaseAdapter extends BaseExpandabl
     @Override
     public View getChildView(int groupPosition, final int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
 
-        final String childText = (String) getChild(groupPosition, childPosition);
+        MovementHistory childText = (MovementHistory) getChild(groupPosition, childPosition);
 
         if (convertView == null) {
             LayoutInflater infalInflater = (LayoutInflater) this._context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = infalInflater.inflate(R.layout.movement_fragment_child_list_item, null);
         }
 
-        TextView txtListChild1 = (TextView) convertView.findViewById(R.id.movement_fragment_child_list_item_tv1);
+        TextView personal = (TextView) convertView.findViewById(R.id.movement_fragment_child_list_item_tv_personal);
+        TextView unit = (TextView) convertView.findViewById(R.id.movement_fragment_child_list_item_tv_birim);
+        TextView location = (TextView) convertView.findViewById(R.id.movement_fragment_child_list_item_tv_lokasyon);
+        TextView locationDetail = (TextView) convertView.findViewById(R.id.movement_fragment_child_list_item_tv_lokasyon_detay);
 
-        txtListChild1.setText(childText);
+        personal.setText(childText.getPersonal().getFirstname()+" "+childText.getPersonal().getLastname());
+        unit.setText(childText.getUnit().getName());
+        location.setText(childText.getLocation().getName());
+        locationDetail.setText(childText.getLocationdetail());
         return convertView;
     }
 
     @Override
     public int getChildrenCount(int groupPosition) {
-        return this._listDataChild.get(this._listDataHeader.get(groupPosition)).size();
+        return 1;
     }
 
     @Override

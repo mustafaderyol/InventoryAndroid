@@ -3,6 +3,7 @@ package com.mustafaderyol.inventory.util;
 import com.mustafaderyol.inventory.entity.Inventory;
 import com.mustafaderyol.inventory.entity.InventoryRelationship;
 import com.mustafaderyol.inventory.entity.Personal;
+import com.mustafaderyol.inventory.entity.Services;
 import com.squareup.okhttp.OkHttpClient;
 
 import java.util.List;
@@ -27,6 +28,7 @@ public class Global {
     public static Inventory INVENTORY;
 
     public static List<InventoryRelationship> INVENTORTYRELATIONSHIPLIST;
+    public static List<Services> INVENTORTYSERVICESLIST;
 
 
 

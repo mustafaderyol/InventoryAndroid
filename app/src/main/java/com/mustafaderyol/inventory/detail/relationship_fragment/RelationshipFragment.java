@@ -21,7 +21,6 @@ import com.mustafaderyol.inventory.util.Global;
 
 public class RelationshipFragment extends Fragment {
     private ListView listView;
-    private FloatingActionButton floatingActionButton;
 
 
     @Override
@@ -39,13 +38,6 @@ public class RelationshipFragment extends Fragment {
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(view.getContext(), android.R.layout.simple_list_item_1, android.R.id.text1,relationships);
         listView.setAdapter(adapter);
 
-        floatingActionButton = (FloatingActionButton) view.findViewById(R.id.relationship_fragment_fab);
-        floatingActionButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getActivity(),"Hareket Geçmişi",Toast.LENGTH_SHORT).show();
-            }
-        });
         return view;
     }
 }

@@ -29,7 +29,6 @@ public class GeneralFragment extends Fragment {
     private ArrayList list;
     private ListView liste;
     private GeneralFragmentListViewBaseAdapter generalFragmentListViewBaseAdapter;
-    private FloatingActionButton floatingActionButton;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -43,6 +42,7 @@ public class GeneralFragment extends Fragment {
         items.add(new GeneralFragmentItem("Birim",movementHistory.getUnit().getName()));
         items.add(new GeneralFragmentItem("Lokasyon",movementHistory.getLocation().getName()));
         items.add(new GeneralFragmentItem("Lokasyon Detay",movementHistory.getLocationdetail()));
+        items.add(new GeneralFragmentItem("Not",Global.INVENTORY.getNote()));
 
         for (int i=0;i< Global.INVENTORY.getInventoryDetailParameter().size();i++)
         {
@@ -63,14 +63,6 @@ public class GeneralFragment extends Fragment {
         liste=(ListView) view.findViewById(R.id.general_fragment_listview);
         generalFragmentListViewBaseAdapter = new GeneralFragmentListViewBaseAdapter(getActivity(), items);
         liste.setAdapter(generalFragmentListViewBaseAdapter);
-
-        floatingActionButton = (FloatingActionButton) view.findViewById(R.id.general_fragment_fab);
-        floatingActionButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getActivity(),"Detayları Düzenle",Toast.LENGTH_SHORT).show();
-            }
-        });
 
         return view;
     }
