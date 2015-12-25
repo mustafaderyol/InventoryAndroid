@@ -7,7 +7,16 @@
         <item name="android:textColorPrimary">@color/colorTextColorPrimary</item>
         <item name="android:textColorPrimaryInverse">@color/colorTextColorPrimary</item>
         <item name="android:windowBackground">@color/colorLayoutBackground</item>
-        <item name="android:textColor">@color/colorTextBlack</item>
+        <item name="android:listViewStyle">@style/ListFont</item>
+        <item name="android:textViewStyle">@style/CodeFont</item>
+    </style>
+
+    <style name="ListFont" parent="@android:style/Widget.ListView">
+        <item name="android:textColor">#000</item>
+    </style>
+
+    <style name="CodeFont" parent="@android:style/TextAppearance.Small">
+        <item name="android:textColor">#000</item>
     </style>
 
 </resources>

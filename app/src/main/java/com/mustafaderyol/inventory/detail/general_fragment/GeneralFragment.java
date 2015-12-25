@@ -17,6 +17,10 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.mustafaderyol.inventory.R;
+import com.mustafaderyol.inventory.entity.InventoryDetailCommonParameter;
+import com.mustafaderyol.inventory.entity.InventoryDetailParameter;
+import com.mustafaderyol.inventory.entity.MovementHistory;
+import com.mustafaderyol.inventory.util.Global;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,8 +37,28 @@ public class GeneralFragment extends Fragment {
 
 
         final ArrayList<GeneralFragmentItem> items = new ArrayList<GeneralFragmentItem>();
-        items.add(new GeneralFragmentItem("Marka","PackardBell"));
-        items.add(new GeneralFragmentItem("Model","TK85"));
+        MovementHistory movementHistory = Global.INVENTORY.getMovementHistory().get(Global.INVENTORY.getMovementHistory().size()-1);
+
+        items.add(new GeneralFragmentItem("Personel",movementHistory.getPersonal().getFirstname()+" "+movementHistory.getPersonal().getLastname()));
+        items.add(new GeneralFragmentItem("Birim",movementHistory.getUnit().getName()));
+        items.add(new GeneralFragmentItem("Lokasyon",movementHistory.getLocation().getName()));
+        items.add(new GeneralFragmentItem("Lokasyon Detay",movementHistory.getLocationdetail()));
+
+        for (int i=0;i< Global.INVENTORY.getInventoryDetailParameter().size();i++)
+        {
+            InventoryDetailParameter inventoryDetailParameter = Global.INVENTORY.getInventoryDetailParameter().get(i);
+            if (inventoryDetailParameter.getAnswerparameter() == null)
+                items.add(new GeneralFragmentItem(inventoryDetailParameter.getParameter().getName(),inventoryDetailParameter.getText()));
+            else
+                items.add(new GeneralFragmentItem(inventoryDetailParameter.getParameter().getName(),inventoryDetailParameter.getAnswerparameter().getName()));
+        }
+
+
+        for (int i=0;i< Global.INVENTORY.getInventoryDetailCommonParameter().size();i++)
+        {
+            InventoryDetailCommonParameter inventoryDetailCommonParameter = Global.INVENTORY.getInventoryDetailCommonParameter().get(i);
+            items.add(new GeneralFragmentItem(inventoryDetailCommonParameter.getCommonparameter().getName(),inventoryDetailCommonParameter.getUndercommonparameter().getName()));
+        }
 
         liste=(ListView) view.findViewById(R.id.general_fragment_listview);
         generalFragmentListViewBaseAdapter = new GeneralFragmentListViewBaseAdapter(getActivity(), items);

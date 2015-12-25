@@ -3,51 +3,67 @@ package com.mustafaderyol.inventory;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.content.Intent;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.AsyncTask;
 
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Base64;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
-import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.mustafaderyol.inventory.detail.InventoryDetail;
+import com.mustafaderyol.inventory.entity.Personal;
+import com.mustafaderyol.inventory.util.Global;
+import com.mustafaderyol.inventory.util.LoginItem;
+import com.mustafaderyol.inventory.util.NetworkUtil;
 
-import java.util.List;
+import java.io.UnsupportedEncodingException;
 
+import retrofit.Call;
+import retrofit.Callback;
+import retrofit.Response;
+import retrofit.Retrofit;
 
 public class LoginActivity extends AppCompatActivity{
 
     private Toolbar toolbar;
+    private Context context;
+    private View coordinatorLayoutView;
 
-    private static final int REQUEST_READ_CONTACTS = 0;
-    private static final String[] DUMMY_CREDENTIALS = new String[]{
-            "mstfdryl@gmail.com:123456789"
-    };
     private UserLoginTask mAuthTask = null;
     private AutoCompleteTextView mEmailView;
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
 
+    private Boolean successBool;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        coordinatorLayoutView = findViewById(R.id.snackbarPosition);
+
 
         toolbar =(Toolbar) findViewById(R.id.app_bar);
         setSupportActionBar(toolbar);
+        context = getApplicationContext();
+
+        if(NetworkUtil.getConnectivityStatusString(getApplicationContext())==0){
+
+            Snackbar.make(coordinatorLayoutView,"Internet Bağlantısı Yok.",Snackbar.LENGTH_LONG).show();
+        }
 
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
 
@@ -67,9 +83,18 @@ public class LoginActivity extends AppCompatActivity{
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                //attemptLogin();
-                Intent i = new Intent(getApplication(),Dashboard.class);
-                startActivity(i);
+                if(NetworkUtil.getConnectivityStatusString(getApplicationContext())==0)
+                {
+                    Snackbar.make(coordinatorLayoutView,"Internet Bağlantısı Yok.",Snackbar.LENGTH_LONG).show();
+                }
+                else
+                {
+                    attemptLogin();
+
+                      //Intent i = new Intent(getApplication(),Dashboard.class);
+                      //startActivity(i);
+                }
+
             }
         });
 
@@ -121,7 +146,7 @@ public class LoginActivity extends AppCompatActivity{
     }
 
     private boolean isPasswordValid(String password) {
-        return password.length() > 7;
+        return password.length() > 0;
     }
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
@@ -152,26 +177,6 @@ public class LoginActivity extends AppCompatActivity{
         }
     }
 
-
-    private interface ProfileQuery {
-        String[] PROJECTION = {
-                ContactsContract.CommonDataKinds.Email.ADDRESS,
-                ContactsContract.CommonDataKinds.Email.IS_PRIMARY,
-        };
-
-        int ADDRESS = 0;
-        int IS_PRIMARY = 1;
-    }
-
-
-    private void addEmailsToAutoComplete(List<String> emailAddressCollection) {
-        ArrayAdapter<String> adapter =
-                new ArrayAdapter<>(LoginActivity.this,
-                        android.R.layout.simple_dropdown_item_1line, emailAddressCollection);
-
-        mEmailView.setAdapter(adapter);
-    }
-
     public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
 
         private final String mEmail;
@@ -185,27 +190,83 @@ public class LoginActivity extends AppCompatActivity{
         @Override
         protected Boolean doInBackground(Void... params) {
 
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                return false;
-            }
+            successBool = false;
 
-            for (String credential : DUMMY_CREDENTIALS) {
-                String[] pieces = credential.split(":");
-                if (pieces[0].equals(mEmail)) {
-                    return pieces[1].equals(mPassword);
+            Global.EMAIL = mEmail;
+            Global.PASSWORD = mPassword;
+            LoginItem loginItem = new LoginItem(mEmail, mPassword);
+
+            Call<Personal> call = Global.service.getUser(loginItem);
+
+            call.enqueue(new Callback<Personal>() {
+                @Override
+                public void onResponse(Response<Personal> response, Retrofit retrofit) {
+                    try
+                    {
+                        if(response.body()== null)
+                        {
+                            Snackbar.make(coordinatorLayoutView,"Kullanıcı Adı veya Parola Hatalı",Snackbar.LENGTH_LONG).show();
+                            successBool = false;
+                        }
+                        else
+                        {
+                            Global.PERSONAL = response.body();
+                            String text = Global.EMAIL+":"+Global.PASSWORD;
+                            byte[] data = null;
+                            try {
+                                data = text.getBytes("UTF-8");
+                            } catch (UnsupportedEncodingException e1) {
+                                e1.printStackTrace();
+                            }
+                            String base64 = Base64.encodeToString(data, Base64.DEFAULT);
+
+                            Global.BASIC_AUTH = base64;
+
+                            successBool = true;
+
+                            //Snackbar.make(coordinatorLayoutView,Global.PERSONAL.getFirstname()+" "+Global.PERSONAL.getLastname(),Snackbar.LENGTH_LONG).show();
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        successBool = false;
+                        Snackbar.make(coordinatorLayoutView,"Kullanıcı Adı veya Parola Hatalı",Snackbar.LENGTH_LONG).show();
+                    }
+
+
+                }
+
+                @Override
+                public void onFailure(Throwable t) {
+                    Snackbar.make(coordinatorLayoutView,"İşlem Gerçekleştirilemedi.",Snackbar.LENGTH_LONG).show();
+                    successBool = false;
+
+                }
+            });
+
+            try
+            {
+                if(Global.PERSONAL == null)
+                {
+                    successBool = false;
+                }
+                else
+                {
+                    successBool = true;
+
                 }
             }
-
-            return true;
+            catch (Exception e)
+            {
+                successBool = false;
+            }
+            return successBool;
         }
 
         @Override
-        protected void onPostExecute(final Boolean success) {
+        protected void onPostExecute(Boolean success) {
             mAuthTask = null;
             showProgress(false);
-
             if (success) {
                 Intent i = new Intent(getApplication(),Dashboard.class);
                 startActivity(i);
@@ -213,6 +274,7 @@ public class LoginActivity extends AppCompatActivity{
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
                 mPasswordView.requestFocus();
             }
+
         }
 
         @Override

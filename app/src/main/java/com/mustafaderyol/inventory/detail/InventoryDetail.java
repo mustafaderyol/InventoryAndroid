@@ -8,6 +8,7 @@ import android.support.v7.widget.Toolbar;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import com.mustafaderyol.inventory.R;
+import com.mustafaderyol.inventory.util.Global;
 
 public class InventoryDetail extends AppCompatActivity {
 
@@ -20,9 +21,11 @@ public class InventoryDetail extends AppCompatActivity {
         setContentView(R.layout.activity_inventory_detail);
 
         toolbar =(Toolbar) findViewById(R.id.app_bar);
-        toolbar.setTitle("Detaylar");
+        toolbar.setTitle("DETAYLAR");
         setSupportActionBar(toolbar);
-        toolbar.setSubtitle("102010");
+
+        String subTitle = Global.INVENTORY.getCategory().getName()+" - "+String.valueOf(Global.INVENTORY.getId()+120000);
+        toolbar.setSubtitle(subTitle);
 
         ActionBar mActionBar = getSupportActionBar();
         mActionBar.setHomeButtonEnabled(true);
