@@ -52,6 +52,22 @@
                 android:value=".Dashboard" />
 
         </activity>
+        <activity
+            android:name=".profile.Profile"
+            android:label="@string/title_activity_inventory_detail">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Dashboard" />
+
+        </activity>
+        <activity
+            android:name=".profile.PasswordChange"
+            android:label="@string/title_activity_inventory_detail">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Dashboard" />
+
+        </activity>
     </application>
 
 </manifest>

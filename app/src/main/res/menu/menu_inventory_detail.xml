@@ -3,8 +3,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".detail.InventoryDetail">
     <item
-        android:id="@+id/action_settings"
+        android:id="@+id/action_profil"
         android:orderInCategory="100"
-        android:title="@string/action_settings"
+        android:title="@string/action_profil"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_passwordChange"
+        android:orderInCategory="100"
+        android:title="@string/action_passwordChange"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_signout"
+        android:orderInCategory="100"
+        android:title="@string/action_signout"
         app:showAsAction="never" />
 </menu>

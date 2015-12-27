@@ -1,5 +1,6 @@
 package com.mustafaderyol.inventory.detail;
 
+import android.content.Intent;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -7,6 +8,12 @@ import android.support.v7.widget.Toolbar;
 
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.Toast;
+
+import com.mustafaderyol.inventory.profile.PasswordChange;
+import com.mustafaderyol.inventory.profile.Profile;
 import com.mustafaderyol.inventory.R;
 import com.mustafaderyol.inventory.util.Global;
 
@@ -100,6 +107,34 @@ public class InventoryDetail extends AppCompatActivity {
             }
         });
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_inventory_detail, menu);//Menu Resource, Menu
+        return true;
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_profil:
+                Intent profil = new Intent(getApplication(), Profile.class);
+                startActivity(profil);
+                return true;
+            case R.id.action_passwordChange:
+                Intent passwordChange = new Intent(getApplication(), PasswordChange.class);
+                startActivity(passwordChange);
+                return true;
+            case R.id.action_signout:
+                Intent homeIntent = new Intent(Intent.ACTION_MAIN);
+                homeIntent.addCategory( Intent.CATEGORY_HOME );
+                homeIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(homeIntent);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
 }

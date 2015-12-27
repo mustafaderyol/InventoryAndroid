@@ -8,6 +8,8 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -17,6 +19,8 @@ import com.mustafaderyol.inventory.detail.InventoryDetail;
 import com.mustafaderyol.inventory.entity.Inventory;
 import com.mustafaderyol.inventory.entity.InventoryRelationship;
 import com.mustafaderyol.inventory.entity.Services;
+import com.mustafaderyol.inventory.profile.PasswordChange;
+import com.mustafaderyol.inventory.profile.Profile;
 import com.mustafaderyol.inventory.util.Global;
 
 import java.io.IOException;
@@ -166,6 +170,34 @@ public class Dashboard extends AppCompatActivity {
 
         }
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_inventory_detail, menu);//Menu Resource, Menu
+        return true;
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_profil:
+                Intent profil = new Intent(getApplication(), Profile.class);
+                startActivity(profil);
+                return true;
+            case R.id.action_passwordChange:
+                Intent passwordChange = new Intent(getApplication(), PasswordChange.class);
+                startActivity(passwordChange);
+                return true;
+            case R.id.action_signout:
+                Intent homeIntent = new Intent(Intent.ACTION_MAIN);
+                homeIntent.addCategory( Intent.CATEGORY_HOME );
+                homeIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(homeIntent);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
 }

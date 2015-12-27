@@ -9,6 +9,7 @@
         <item name="android:windowBackground">@color/colorLayoutBackground</item>
         <item name="android:listViewStyle">@style/ListFont</item>
         <item name="android:textViewStyle">@style/CodeFont</item>
+        <item name="android:actionMenuTextColor">#FFF</item>
     </style>
 
     <style name="ListFont" parent="@android:style/Widget.ListView">
