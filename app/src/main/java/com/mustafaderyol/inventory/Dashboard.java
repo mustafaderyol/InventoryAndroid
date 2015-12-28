@@ -11,6 +11,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -41,7 +43,11 @@ public class Dashboard extends AppCompatActivity {
     private Toolbar toolbar;
     private View dashboard_layout;
     private TextView personalTextView;
+    private EditText dashboard_layout_inventory_no;
     private URL url;
+    private Button searchbutton;
+
+    String sonuc;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,67 +76,48 @@ public class Dashboard extends AppCompatActivity {
                 startActivityForResult(intent, 0);
             }
         });
+
+        dashboard_layout_inventory_no = (EditText) findViewById(R.id.dashboard_layout_inventory_no);
+
+        searchbutton = (Button) findViewById(R.id.searchbutton);
+        searchbutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                String s = dashboard_layout_inventory_no.getText().toString();
+                if(s.length()>=6)
+                {
+                    Long id = Long.parseLong(s)-Long.parseLong("120000");
+
+                    sonuc = s;
+
+                    searchInventory(id);
+
+                }
+                else
+                {
+                    Toast.makeText(getApplication(),"Minimum 6 karakter giriniz.",Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        });
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         if (requestCode == 0) {
             if (resultCode == RESULT_OK) {
-                final String result = intent.getStringExtra("SCAN_RESULT");
+                String result = intent.getStringExtra("SCAN_RESULT");
                 try
                 {
                     Long id = Long.parseLong(result)-Long.parseLong("120000");
 
                     Snackbar.make(dashboard_layout,"Sonuç: "+result,Snackbar.LENGTH_LONG).show();
 
+                    sonuc = result;
 
-                    Call<Inventory> call = Global.service.getInventory(id,Global.BASIC_AUTH);
-                    call.enqueue(new Callback<Inventory>() {
-                        @Override
-                        public void onResponse(Response<Inventory> response, Retrofit retrofit) {
+                    searchInventory(id);
 
-                            Global.INVENTORY = response.body();
-
-                            Call<List<InventoryRelationship>> call = Global.service.getInventoryRelationship(Global.INVENTORY.getId(),Global.BASIC_AUTH);
-                            call.enqueue(new Callback<List<InventoryRelationship>>() {
-                                @Override
-                                public void onResponse(Response<List<InventoryRelationship>> response2, Retrofit retrofit) {
-
-
-                                    Global.INVENTORTYRELATIONSHIPLIST = response2.body();
-
-                                    Call<List<Services>> call = Global.service.getInventoryServices(Global.INVENTORY.getId(),Global.BASIC_AUTH);
-                                    call.enqueue(new Callback<List<Services>>() {
-                                        @Override
-                                        public void onResponse(Response<List<Services>> response2, Retrofit retrofit) {
-
-
-                                            Global.INVENTORTYSERVICESLIST = response2.body();
-
-                                            Intent i = new Intent(getApplication(), InventoryDetail.class);
-                                            startActivity(i);
-                                        }
-
-                                        @Override
-                                        public void onFailure(Throwable t) {
-                                        }
-                                    });
-                                }
-
-                                @Override
-                                public void onFailure(Throwable t) {
-                                }
-                            });
-
-
-
-                        }
-
-                        @Override
-                        public void onFailure(Throwable t) {
-                            Snackbar.make(dashboard_layout,"Sonuç: "+result,Snackbar.LENGTH_INDEFINITE).show();
-                        }
-                    });
 
                 }
                 catch (Exception e)
@@ -170,6 +157,57 @@ public class Dashboard extends AppCompatActivity {
 
         }
 
+    }
+
+    public void searchInventory(Long id)
+    {
+        Call<Inventory> call = Global.service.getInventory(id,Global.BASIC_AUTH);
+        call.enqueue(new Callback<Inventory>() {
+            @Override
+            public void onResponse(Response<Inventory> response, Retrofit retrofit) {
+
+                Global.INVENTORY = response.body();
+
+                Call<List<InventoryRelationship>> call = Global.service.getInventoryRelationship(Global.INVENTORY.getId(),Global.BASIC_AUTH);
+                call.enqueue(new Callback<List<InventoryRelationship>>() {
+                    @Override
+                    public void onResponse(Response<List<InventoryRelationship>> response2, Retrofit retrofit) {
+
+
+                        Global.INVENTORTYRELATIONSHIPLIST = response2.body();
+
+                        Call<List<Services>> call = Global.service.getInventoryServices(Global.INVENTORY.getId(),Global.BASIC_AUTH);
+                        call.enqueue(new Callback<List<Services>>() {
+                            @Override
+                            public void onResponse(Response<List<Services>> response2, Retrofit retrofit) {
+
+
+                                Global.INVENTORTYSERVICESLIST = response2.body();
+
+                                Intent i = new Intent(getApplication(), InventoryDetail.class);
+                                startActivity(i);
+                            }
+
+                            @Override
+                            public void onFailure(Throwable t) {
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onFailure(Throwable t) {
+                    }
+                });
+
+
+
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                Snackbar.make(dashboard_layout,"Sonuç: "+sonuc,Snackbar.LENGTH_INDEFINITE).show();
+            }
+        });
     }
 
     @Override

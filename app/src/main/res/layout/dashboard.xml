@@ -43,6 +43,33 @@
                 android:text="Personal"
                 android:id="@+id/dashboard_personal_tv" />
 
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_margin="20dp"
+                android:layout_height="wrap_content">
+
+                <android.support.design.widget.TextInputLayout android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                    <AutoCompleteTextView android:id="@+id/dashboard_layout_inventory_no" android:layout_width="match_parent"
+                        android:layout_height="wrap_content" android:hint="Envanter No"
+                        android:inputType="number" android:maxLines="1"
+                        android:layout_margin="20dp"
+                        android:textColor="#000"
+                        android:singleLine="true" />
+
+                </android.support.design.widget.TextInputLayout>
+
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Ara"
+                    android:background="@drawable/loginactivitycustombutton"
+                    android:id="@+id/searchbutton"
+                    android:layout_weight="4" />
+            </LinearLayout>
 
             <ImageButton
                 android:layout_width="wrap_content"
