@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.AsyncTask;
@@ -23,6 +24,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.mustafaderyol.inventory.database.LoginPersonalDBHelper;
 import com.mustafaderyol.inventory.entity.Personal;
 import com.mustafaderyol.inventory.util.Global;
 import com.mustafaderyol.inventory.util.LoginItem;
@@ -48,6 +50,9 @@ public class LoginActivity extends AppCompatActivity{
     private View mLoginFormView;
 
     private Boolean successBool;
+    private Response<Personal> response2;
+
+    private LoginPersonalDBHelper loginPersonalDBHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,19 +60,35 @@ public class LoginActivity extends AppCompatActivity{
         setContentView(R.layout.activity_login);
         coordinatorLayoutView = findViewById(R.id.snackbarPosition);
 
+        loginPersonalDBHelper = new LoginPersonalDBHelper(this);
 
         toolbar =(Toolbar) findViewById(R.id.app_bar);
         setSupportActionBar(toolbar);
         context = getApplicationContext();
 
+        mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
+
+        mPasswordView = (EditText) findViewById(R.id.password);
+
+        mLoginFormView = findViewById(R.id.login_form);
+        mProgressView = findViewById(R.id.login_progress);
+
+        Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
+
         if(NetworkUtil.getConnectivityStatusString(getApplicationContext())==0){
 
             Snackbar.make(coordinatorLayoutView,"Internet Bağlantısı Yok.",Snackbar.LENGTH_LONG).show();
         }
+        else
+        {
+            Cursor rs = loginPersonalDBHelper.getData(1);
+            if ( rs.getCount() > 0)
+            {
+                attemptLogin();
+            }
+        }
 
-        mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
 
-        mPasswordView = (EditText) findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
@@ -79,7 +100,6 @@ public class LoginActivity extends AppCompatActivity{
             }
         });
 
-        Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -98,8 +118,6 @@ public class LoginActivity extends AppCompatActivity{
             }
         });
 
-        mLoginFormView = findViewById(R.id.login_form);
-        mProgressView = findViewById(R.id.login_progress);
     }
 
     private void attemptLogin() {
@@ -132,8 +150,22 @@ public class LoginActivity extends AppCompatActivity{
             cancel = true;
         }
 
+
         if (cancel) {
-            focusView.requestFocus();
+            Cursor rs = loginPersonalDBHelper.getData(1);
+            if ( rs.getCount() > 0)
+            {
+
+                showProgress(true);
+                email = rs.getString(rs.getColumnIndex(LoginPersonalDBHelper.CONTACTS_COLUMN_EMAIL));
+                password = rs.getString(rs.getColumnIndex(LoginPersonalDBHelper.CONTACTS_COLUMN_PASSWORD));
+                mAuthTask = new UserLoginTask(email, password);
+                mAuthTask.execute((Void) null);
+            }
+            else
+            {
+                focusView.requestFocus();
+            }
         } else {
             showProgress(true);
             mAuthTask = new UserLoginTask(email, password);
@@ -179,8 +211,8 @@ public class LoginActivity extends AppCompatActivity{
 
     public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
 
-        private final String mEmail;
-        private final String mPassword;
+        private String mEmail;
+        private String mPassword;
 
         UserLoginTask(String email, String password) {
             mEmail = email;
@@ -191,9 +223,14 @@ public class LoginActivity extends AppCompatActivity{
         protected Boolean doInBackground(Void... params) {
 
             successBool = false;
+            String email = mEmail,password = mPassword;
 
-            Global.EMAIL = mEmail;
-            Global.PASSWORD = mPassword;
+            Cursor rs = loginPersonalDBHelper.getData(1);
+            if ( rs.getCount() <= 0)
+            {
+                loginPersonalDBHelper.insertLoginPersonal(1,email,password);
+            }
+
             LoginItem loginItem = new LoginItem(mEmail, mPassword);
 
             Call<Personal> call = Global.service.getUser(loginItem);
@@ -206,24 +243,35 @@ public class LoginActivity extends AppCompatActivity{
                         if(response.body()== null)
                         {
                             Snackbar.make(coordinatorLayoutView,"Kullanıcı Adı veya Parola Hatalı",Snackbar.LENGTH_LONG).show();
+                            loginPersonalDBHelper.deleteLoginPersonal(1);
                             successBool = false;
                         }
                         else
                         {
+                            response2 = response;
                             Global.PERSONAL = response.body();
+                            Global.EMAIL = Global.PERSONAL.getEmail();
+                            Global.PASSWORD = Global.PERSONAL.getPassword();
                             String text = Global.EMAIL+":"+Global.PASSWORD;
                             String base64 =  Base64.encodeToString(text.getBytes(), Base64.NO_WRAP);
 
                             Global.BASIC_AUTH = "Basic "+base64;
 
+                            loginPersonalDBHelper.updateLoginPersonal(1,Global.EMAIL,Global.PASSWORD);
                             successBool = true;
+
+                            Intent i = new Intent(getApplication(),Dashboard.class);
+                            startActivity(i);
 
                             //Snackbar.make(coordinatorLayoutView,Global.PERSONAL.getFirstname()+" "+Global.PERSONAL.getLastname(),Snackbar.LENGTH_LONG).show();
                         }
                     }
                     catch (Exception e)
                     {
+                        mPasswordView.setError(getString(R.string.error_incorrect_password));
+                        mPasswordView.requestFocus();
                         successBool = false;
+                        loginPersonalDBHelper.deleteLoginPersonal(1);
                         Snackbar.make(coordinatorLayoutView,"Kullanıcı Adı veya Parola Hatalı",Snackbar.LENGTH_LONG).show();
                     }
 
@@ -232,28 +280,15 @@ public class LoginActivity extends AppCompatActivity{
 
                 @Override
                 public void onFailure(Throwable t) {
+                    mPasswordView.setError(getString(R.string.error_incorrect_password));
+                    mPasswordView.requestFocus();
                     Snackbar.make(coordinatorLayoutView,"İşlem Gerçekleştirilemedi.",Snackbar.LENGTH_LONG).show();
+                    loginPersonalDBHelper.deleteLoginPersonal(1);
                     successBool = false;
 
                 }
             });
 
-            try
-            {
-                if(Global.PERSONAL == null)
-                {
-                    successBool = false;
-                }
-                else
-                {
-                    successBool = true;
-
-                }
-            }
-            catch (Exception e)
-            {
-                successBool = false;
-            }
             return successBool;
         }
 
@@ -261,13 +296,6 @@ public class LoginActivity extends AppCompatActivity{
         protected void onPostExecute(Boolean success) {
             mAuthTask = null;
             showProgress(false);
-            if (success) {
-                Intent i = new Intent(getApplication(),Dashboard.class);
-                startActivity(i);
-            } else {
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
-                mPasswordView.requestFocus();
-            }
 
         }
 
